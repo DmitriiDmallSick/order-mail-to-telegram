@@ -1,0 +1,12 @@
+{
+  "name": "order-mail-to-telegram-pro",
+  "version": "1.0.0",
+  "description": "Pro version: Telegram order alerts with accept button, YDB status and YMQ reminders.",
+  "main": "index.js",
+  "dependencies": {
+    "ydb-sdk": "^5.11.1",
+    "@yandex-cloud/nodejs-sdk": "latest",
+    "@aws-sdk/client-sqs": "^3.600.0",
+    "html-to-text": "^9.0.5"
+  }
+}

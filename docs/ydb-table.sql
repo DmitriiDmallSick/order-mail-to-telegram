@@ -1,0 +1,22 @@
+CREATE TABLE `insales_order_alerts` (
+  request_id Utf8 NOT NULL,
+  status Utf8,
+  order_number Utf8,
+  phone Utf8,
+  name Utf8,
+  customer_email Utf8,
+  products_text Utf8,
+  total_price Utf8,
+  comment Utf8,
+  delivery_text Utf8,
+  payment_text Utf8,
+  payment_status Utf8,
+  order_url Utf8,
+  message_id Utf8,
+  created_at Utf8,
+  accepted_by Utf8,
+  accepted_at Utf8,
+  raw_subject Utf8,
+  raw_email_text Utf8,
+  PRIMARY KEY (request_id)
+);

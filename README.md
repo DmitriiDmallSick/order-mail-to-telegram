@@ -476,7 +476,7 @@ https://console.yandex.cloud/
 
 > Для небольших нагрузок проект обычно стоит очень дёшево или укладывается в бесплатные лимиты, но платёжный аккаунт всё равно может понадобиться для активации облачных сервисов.
 
-![Создание аккаунта Yandex.Claude](./docs/images/5.jpg)
+![Создание аккаунта Yandex.Cloud](./docs/images/5.jpg)
 
 ---
 
@@ -578,7 +578,7 @@ ymq.reader
 serverless.functions.invoker
 ```
 
-![Создание сервисного аккаунта в Yandex.Claude](./docs/images/6.jpg)
+![Создание сервисного аккаунта в Yandex.Cloud](./docs/images/6.jpg)
 
 Что делают эти роли:
 
@@ -742,7 +742,7 @@ YDB_DATABASE=/ru-central1/xxxx/yyyy
 
 Важно: в `YDB_ENDPOINT` не нужно добавлять `?database=...`.
 
-![Создание YDB таблицы в Yandex.Claude](./docs/images/8.jpg)
+![Создание YDB таблицы в Yandex.Cloud](./docs/images/8.jpg)
 
 ---
 
@@ -775,7 +775,7 @@ CREATE TABLE `insales_order_alerts` (
 );
 ```
 
-![Заполнение YDB таблицы через SQL в Yandex.Claude](./docs/images/9.jpg)
+![Заполнение YDB таблицы через SQL в Yandex.Cloud](./docs/images/9.jpg)
 
 Название таблицы:
 
@@ -864,7 +864,7 @@ DelaySeconds: 600
 
 `600` секунд = 10 минут (либо другое необходимое значение).
 
-![Создание YMQ очереди в Yandex.Claude](./docs/images/10.jpg)
+![Создание YMQ очереди в Yandex.Cloud](./docs/images/10.jpg)
 
 ---
 
@@ -884,7 +884,7 @@ https://message-queue.api.cloud.yandex.net/xxxx/yyyy/insales-order-reminders
 YMQ_QUEUE_URL=
 ```
 
-![URL YMQ очереди в Yandex.Claude](./docs/images/11.jpg)
+![URL YMQ очереди в Yandex.Cloud](./docs/images/11.jpg)
 
 ---
 
@@ -899,7 +899,7 @@ ymq.reader
 serverless.functions.invoker
 ```
 
-![Роли сервисного аккаунта Yandex.Claude](./docs/images/12.jpg)
+![Роли сервисного аккаунта Yandex.Cloud](./docs/images/12.jpg)
 
 Для чего они нужны:
 
@@ -1001,7 +1001,7 @@ Node.js 18+
 index.handler
 ```
 
-![Создание функции в Yandex.Claude](./docs/images/13.jpg)
+![Создание функции в Yandex.Cloud](./docs/images/13.jpg)
 
 ---
 
@@ -1034,7 +1034,7 @@ package.json
 
 Файл `package.json` содержит зависимости.
 
-![Настройка функции и package.json в Yandex.Claude](./docs/images/14.jpg)
+![Настройка функции и package.json в Yandex.Cloud](./docs/images/14.jpg)
 
 ---
 
@@ -1109,7 +1109,7 @@ REMINDER_DELAY_SECONDS=600
 
 `REMINDER_DELAY_SECONDS=600` означает, что напоминание будет отправлено через 10 минут. Здесь можно указать любое необходимое время в секундах.
 
-![Настройка переменных в Yandex.Claude](./docs/images/15.jpg)
+![Настройка переменных в Yandex.Cloud](./docs/images/15.jpg)
 
 ---
 
@@ -1173,7 +1173,7 @@ pro/index.js
 ```
 ---
 
-![Настройка index.js функции в Yandex.Claude](./docs/images/16.jpg)
+![Настройка index.js функции в Yandex.Cloud](./docs/images/16.jpg)
 
 ## 3.11. Создать версию функции
 
@@ -1221,7 +1221,7 @@ https://functions.yandexcloud.net/xxxxxxxxxxxx
 
 или выдайте право вызова всем пользователям через права доступа.
 
-![URL функции в Yandex.Claude](./docs/images/17.jpg)
+![URL функции в Yandex.Cloud](./docs/images/17.jpg)
 
 ---
 
@@ -1342,7 +1342,7 @@ order-mail-trigger
 order-email-to-telegram
 ```
 
-![Настройка mail триггера в Yandex.Claude](./docs/images/18.jpg)
+![Настройка mail триггера в Yandex.Cloud](./docs/images/18.jpg)
 
 ---
 
@@ -1421,7 +1421,7 @@ order-email-to-telegram
 
 DLQ имеет смысл добавлять позже, если нужно отдельно собирать письма, которые не удалось обработать.
 
-![Полная настройка mail триггера в Yandex.Claude](./docs/images/19.jpg)
+![Полная настройка mail триггера в Yandex.Cloud](./docs/images/19.jpg)
 
 ---
 
@@ -1434,7 +1434,7 @@ DLQ имеет смысл добавлять позже, если нужно о�
 После успешной настройки триггера эту роль рекомендуется отозвать и оставить только необходимые.
 ```
 
-![Настройка ролей для сервисного аккаунта в Yandex.Claude](./docs/images/20.jpg)
+![Настройка ролей для сервисного аккаунта в Yandex.Cloud](./docs/images/20.jpg)
 
 ---
 
@@ -1450,7 +1450,7 @@ xxxxxxxxxxxxxxxxxxxx@serverless.yandexcloud.net
 
 Именно на этот адрес нужно отправлять письма с заказами.
 
-![Получение Email в Yandex.Claude](./docs/images/21.jpg)
+![Получение Email в Yandex.Cloud](./docs/images/21.jpg)
 
 Сохраните его:
 

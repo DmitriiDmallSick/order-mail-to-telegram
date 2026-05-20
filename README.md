@@ -48,7 +48,7 @@ Telegram
 
 В расширенной версии добавляются кнопка принятия заказа, хранение статуса в YDB и повторное напоминание, если заказ никто не взял в работу на протяжении заданного времени.
 
-![Уведомления с InSales в чате ТГ](./docs/images/1.jpg)
+![Уведомления о заказах из InSales в Telegram](./docs/images/1.jpg)
 
 ---
 
@@ -258,7 +258,6 @@ E-mail: client@example.com
 ```text
 insales-yandex-telegram-orders/
 ├─ README.md
-├─ .gitignore
 ├─ LICENSE
 │
 ├─ lite/
@@ -272,12 +271,8 @@ insales-yandex-telegram-orders/
 │  └─ index.js
 │
 ├─ docs/
-│  ├─ architecture.md
-│  ├─ yandex-cloud-setup.md
-│  ├─ telegram-setup.md
-│  ├─ ydb-table.sql
-│  ├─ ymq-setup.md
-│  └─ troubleshooting.md
+│  ├─ images/
+│  └─ ydb-table.sql
 │
 └─ examples/
    ├─ env.lite.example
@@ -339,7 +334,7 @@ TELEGRAM_BOT_TOKEN=
 
 > Здесь же можно задать имя боту и настроить фотографию профиля.
 
-![Создание бота через BotFather в ТГ](./docs/images/2.jpg)
+![Создание бота через BotFather в Telegram](./docs/images/2.jpg)
 
 ---
 
@@ -391,7 +386,7 @@ Order Alerts
 ✅ Принято: @manager
 ```
 
-![Создание чата/канала в ТГ и добавление бота](./docs/images/3.jpg)
+![Создание чата в Telegram и добавление бота](./docs/images/3.jpg)
 
 ---
 
@@ -399,14 +394,52 @@ Order Alerts
 
 Чтобы отправлять сообщения в нужный Telegram-чат, нужно получить `chat_id`.
 
-#### Через UserInfoBot
+#### Вариант 1. Через getUpdates
 
-1. Запустите бота.
-2. Выберите в списке чат или канал.
-3. Выберите необходимый чат/канал.
-4. Скопируйте ID чата/канала.
+1. Добавьте бота в нужный чат.
+2. Напишите любое сообщение в этот чат.
 
-![Как узнать ID чата в ТГ](./docs/images/4.jpg)
+Например:
+
+```text
+test
+```
+
+3. Откройте в браузере ссылку:
+
+```text
+https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>/getUpdates
+```
+
+Вместо `<TELEGRAM_BOT_TOKEN>` подставьте токен вашего бота.
+
+Пример:
+
+```text
+https://api.telegram.org/bot1234567890:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/getUpdates
+```
+
+4. В ответе найдите блок `chat`.
+
+Пример:
+
+```json
+{
+  "message": {
+    "chat": {
+      "id": -1001234567890,
+      "title": "Заказы магазина",
+      "type": "supergroup"
+    }
+  }
+}
+```
+
+Значение поля `id` — это и есть ID чата:
+
+```text
+-1001234567890
+```
 
 Сохраните его, он понадобится при настройке функции:
 
@@ -419,6 +452,8 @@ TELEGRAM_CHAT_ID=-1001234567890
 ```env
 TELEGRAM_CHAT_ID_TEST=-1001234567890
 ```
+
+![Получение ID чата в Telegram](./docs/images/4.jpg)
 
 ---
 
@@ -476,7 +511,7 @@ https://console.yandex.cloud/
 
 > Для небольших нагрузок проект обычно стоит очень дёшево или укладывается в бесплатные лимиты, но платёжный аккаунт всё равно может понадобиться для активации облачных сервисов.
 
-![Создание аккаунта Yandex.Cloud](./docs/images/5.jpg)
+![Создание аккаунта Yandex Cloud](./docs/images/5.jpg)
 
 ---
 
@@ -578,8 +613,6 @@ ymq.reader
 serverless.functions.invoker
 ```
 
-![Создание сервисного аккаунта в Yandex.Cloud](./docs/images/6.jpg)
-
 Что делают эти роли:
 
 | Роль | Зачем нужна |
@@ -590,6 +623,8 @@ serverless.functions.invoker
 | `serverless.functions.invoker` | разрешение триггерам запускать функцию |
 
 На этапе настройки можно временно использовать более широкую роль, например `editor`, но после проверки лучше оставить только необходимые права.
+
+![Создание сервисного аккаунта в Yandex Cloud](./docs/images/6.jpg)
 
 ---
 
@@ -609,8 +644,6 @@ IAM
 → Статический ключ доступа
 ```
 
-![Создание ключа доступа](./docs/images/7.jpg)
-
 После создания Yandex Cloud покажет два значения:
 
 ```text
@@ -626,6 +659,8 @@ AWS_SECRET_ACCESS_KEY=
 ```
 
 > Важно: `Secret access key` показывается только один раз. Сохраните его сразу.
+
+![Создание статического ключа доступа в Yandex Cloud](./docs/images/7.jpg)
 
 ---
 
@@ -742,7 +777,7 @@ YDB_DATABASE=/ru-central1/xxxx/yyyy
 
 Важно: в `YDB_ENDPOINT` не нужно добавлять `?database=...`.
 
-![Создание YDB таблицы в Yandex.Cloud](./docs/images/8.jpg)
+![Подключение к YDB в Yandex Cloud](./docs/images/8.jpg)
 
 ---
 
@@ -775,8 +810,6 @@ CREATE TABLE `insales_order_alerts` (
 );
 ```
 
-![Заполнение YDB таблицы через SQL в Yandex.Cloud](./docs/images/9.jpg)
-
 Название таблицы:
 
 ```text
@@ -784,6 +817,8 @@ insales_order_alerts
 ```
 
 > В текущей версии таблица названа `insales_order_alerts`, потому что изначально проект делался под InSales. При необходимости название можно изменить, но тогда его нужно заменить и в коде.
+
+![Создание таблицы в YDB через Query editor](./docs/images/9.jpg)
 
 ---
 
@@ -864,7 +899,7 @@ DelaySeconds: 600
 
 `600` секунд = 10 минут (либо другое необходимое значение).
 
-![Создание YMQ очереди в Yandex.Cloud](./docs/images/10.jpg)
+![Создание очереди YMQ в Yandex Cloud](./docs/images/10.jpg)
 
 ---
 
@@ -884,7 +919,7 @@ https://message-queue.api.cloud.yandex.net/xxxx/yyyy/insales-order-reminders
 YMQ_QUEUE_URL=
 ```
 
-![URL YMQ очереди в Yandex.Cloud](./docs/images/11.jpg)
+![URL очереди YMQ в Yandex Cloud](./docs/images/11.jpg)
 
 ---
 
@@ -899,8 +934,6 @@ ymq.reader
 serverless.functions.invoker
 ```
 
-![Роли сервисного аккаунта Yandex.Cloud](./docs/images/12.jpg)
-
 Для чего они нужны:
 
 | Роль | Назначение |
@@ -909,6 +942,8 @@ serverless.functions.invoker
 | `ymq.writer` | класть сообщение в очередь |
 | `ymq.reader` | читать сообщение из очереди через триггер |
 | `serverless.functions.invoker` | разрешить триггерам запускать функцию |
+
+![Роли сервисного аккаунта в Yandex Cloud](./docs/images/12.jpg)
 
 ---
 
@@ -1001,7 +1036,7 @@ Node.js 18+
 index.handler
 ```
 
-![Создание функции в Yandex.Cloud](./docs/images/13.jpg)
+![Создание Cloud Function в Yandex Cloud](./docs/images/13.jpg)
 
 ---
 
@@ -1034,7 +1069,7 @@ package.json
 
 Файл `package.json` содержит зависимости.
 
-![Настройка функции и package.json в Yandex.Cloud](./docs/images/14.jpg)
+![Файлы функции в Yandex Cloud](./docs/images/14.jpg)
 
 ---
 
@@ -1098,6 +1133,7 @@ TELEGRAM_CHAT_ID=
 
 YDB_ENDPOINT=grpcs://ydb.serverless.yandexcloud.net:2135
 YDB_DATABASE=
+ORDERS_TABLE=insales_order_alerts
 
 YMQ_QUEUE_URL=
 AWS_ACCESS_KEY_ID=
@@ -1109,7 +1145,11 @@ REMINDER_DELAY_SECONDS=600
 
 `REMINDER_DELAY_SECONDS=600` означает, что напоминание будет отправлено через 10 минут. Здесь можно указать любое необходимое время в секундах.
 
-![Настройка переменных в Yandex.Cloud](./docs/images/15.jpg)
+> **Важно:** текст напоминания в Telegram захардкожен как «Заказ не принят 10 минут». Если вы меняете `REMINDER_DELAY_SECONDS`, не забудьте обновить эту строку вручную в `pro/index.js` в функции `buildOrderText`.
+
+> `ORDERS_TABLE` — опциональная переменная. По умолчанию используется `insales_order_alerts`. Задавать явно нужно только если вы переименовали таблицу.
+
+![Переменные окружения Cloud Function в Yandex Cloud](./docs/images/15.jpg)
 
 ---
 
@@ -1153,8 +1193,7 @@ const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 
 ## 3.10. Загрузить код
 
-Скопируйте код нужной версии в файл (из order-mail-to-telegram
-/Pro или Lite/index.js):
+Скопируйте код нужной версии в файл:
 
 ```text
 index.js
@@ -1171,15 +1210,20 @@ lite/index.js
 ```text
 pro/index.js
 ```
----
 
-![Настройка index.js функции в Yandex.Cloud](./docs/images/16.jpg)
+После этого добавьте соответствующий `package.json`.
+
+> Подробный разбор каждой функции, что менять под свой магазин и как адаптировать парсер — в [`docs/code-overview.md`](./docs/code-overview.md).
+
+![Загрузка index.js в Cloud Function](./docs/images/16.jpg)
+
+---
 
 ## 3.11. Создать версию функции
 
 После добавления кода, зависимостей и переменных окружения создайте новую версию функции.
 
-В интерфейсе Yandex Cloud это кнопка:
+В интерфейсе Yandex Cloud это обычно кнопка:
 
 ```text
 Создать версию
@@ -1221,7 +1265,7 @@ https://functions.yandexcloud.net/xxxxxxxxxxxx
 
 или выдайте право вызова всем пользователям через права доступа.
 
-![URL функции в Yandex.Cloud](./docs/images/17.jpg)
+![URL Cloud Function в Yandex Cloud](./docs/images/17.jpg)
 
 ---
 
@@ -1342,7 +1386,7 @@ order-mail-trigger
 order-email-to-telegram
 ```
 
-![Настройка mail триггера в Yandex.Cloud](./docs/images/18.jpg)
+![Создание Email Trigger в Yandex Cloud](./docs/images/18.jpg)
 
 ---
 
@@ -1351,7 +1395,6 @@ order-email-to-telegram
 В настройках триггера укажите:
 
 ```text
-Тип триггера: Почта
 Запускаемый ресурс: Функция
 Функция: order-mail-to-telegram
 Тег версии функции: $latest
@@ -1421,7 +1464,7 @@ order-email-to-telegram
 
 DLQ имеет смысл добавлять позже, если нужно отдельно собирать письма, которые не удалось обработать.
 
-![Полная настройка mail триггера в Yandex.Cloud](./docs/images/19.jpg)
+![Полная настройка Email Trigger в Yandex Cloud](./docs/images/19.jpg)
 
 ---
 
@@ -1434,7 +1477,7 @@ DLQ имеет смысл добавлять позже, если нужно о�
 После успешной настройки триггера эту роль рекомендуется отозвать и оставить только необходимые.
 ```
 
-![Настройка ролей для сервисного аккаунта в Yandex.Cloud](./docs/images/20.jpg)
+![Настройка ролей сервисного аккаунта в Yandex Cloud](./docs/images/20.jpg)
 
 ---
 
@@ -1450,8 +1493,6 @@ xxxxxxxxxxxxxxxxxxxx@serverless.yandexcloud.net
 
 Именно на этот адрес нужно отправлять письма с заказами.
 
-![Получение Email в Yandex.Cloud](./docs/images/21.jpg)
-
 Сохраните его:
 
 ```text
@@ -1459,6 +1500,8 @@ EMAIL_TRIGGER_ADDRESS=xxxxxxxxxxxxxxxxxxxx@serverless.yandexcloud.net
 ```
 
 Эта переменная не обязательно используется в коде, но её удобно сохранить в документации проекта или во внутренней инструкции.
+
+![Email-адрес триггера в Yandex Cloud](./docs/images/21.jpg)
 
 ---
 
@@ -1482,7 +1525,7 @@ xxxxxxxxxxxxxxxxxxxx@serverless.yandexcloud.net
 
 Создавать почтовый ящик вручную не нужно — он уже создан Яндексом автоматически при настройке триггера. Письма будут приходить и обрабатываться без дополнительных действий.
 
-![Настройка почты для копий заказов в InSales](./docs/images/22.jpg)
+![Настройка email для копий заказов в InSales](./docs/images/22.jpg)
 
 ---
 
@@ -1807,25 +1850,13 @@ Yandex Cloud
 → Логи
 ```
 
-После нажатия кнопки в логах должен появиться новый вызов функции.
-
-Обычно это видно по строкам вида:
-
-```text
-END RequestID: ...
-REPORT RequestID: ...
-```
-
-Если в коде включён пользовательский лог, дополнительно может появиться строка:
+После нажатия кнопки в логах должна появиться строка:
 
 ```text
 Route: telegram callback
 ```
 
-Важно: отсутствие строки `Route: telegram callback` само по себе не означает ошибку.  
-Она появится только если такой `console.log(...)` есть в текущей версии кода.
-
-Если после нажатия кнопки в логах вообще не появляется новый вызов функции, значит Telegram не отправляет событие в функцию.
+Если такой строки нет, значит Telegram не отправляет событие в функцию.
 
 Проверьте:
 
@@ -1836,24 +1867,7 @@ allowed_updates содержит callback_query
 функция публичная
 ```
 
-Если новый вызов функции появляется, но кнопка не меняется, чаще всего проблема в одном из следующих мест:
-
-```text
-бот не может редактировать это сообщение
-сообщение было отправлено не ботом
-сообщение слишком старое для редактирования
-ошибка при вызове editMessageText / editMessageReplyMarkup
-callback_query приходит, но обработчик не доходит до редактирования
-```
-
-Для диагностики можно временно добавить в код логирование входящего callback:
-
-```js
-console.log('Route: telegram callback');
-console.log(JSON.stringify(event));
-```
-
-После проверки эти подробные логи лучше убрать, чтобы не хранить лишние данные в логах.
+Если строка есть, но кнопка не меняется, чаще всего проблема в правах бота на редактирование сообщений.
 
 ---
 
@@ -2053,8 +2067,6 @@ Yandex Cloud Console
 → Создать триггер
 ```
 
-![Настройка триггера Yandex.](./docs/images/23.jpg)
-
 В поле **Тип** выберите:
 
 ```text
@@ -2066,6 +2078,8 @@ Message Queue
 ```text
 order-reminder-trigger
 ```
+
+![Создание Message Queue Trigger в Yandex Cloud](./docs/images/23.jpg)
 
 ---
 
@@ -2115,7 +2129,7 @@ insales-order-reminders
 
 Так проще отлаживать интеграцию и не получать повторные напоминания при ошибке. После проверки в этом, как правило, нет необходимости.
 
-![Полная настройка триггера Yandex.](./docs/images/24.jpg)
+![Полная настройка Message Queue Trigger в Yandex Cloud](./docs/images/24.jpg)
 
 ---
 
@@ -2197,95 +2211,15 @@ Yandex Cloud
 → Логи
 ```
 
-В текущей версии функции полезны следующие строки логов:
+При срабатывании очереди в логах должна быть строка:
 
 ```text
-Incoming event keys:
 Route: reminder queue
-Failed to parse queue message:
-Reminder order not found:
-Order already accepted, skip reminder:
-insales-order-handler failed:
 ```
 
----
-
-### Если есть `Route: reminder queue`
-
-Это значит, что YMQ Trigger успешно запустил Cloud Function, а функция определила событие как напоминание из очереди.
-
-Если после этого напоминание не пришло, смотрите следующие строки логов.
+Если такой строки нет, значит YMQ Trigger не запускает функцию.
 
 ---
-
-### Если есть `Order already accepted, skip reminder:`
-
-Это нормальное поведение.
-
-Значит заказ уже был принят через кнопку **«Принять заказ»**, поэтому функция не отправила повторное напоминание.
-
----
-
-### Если есть `Reminder order not found:`
-
-Значит из очереди пришёл `request_id`, но функция не нашла такой заказ в YDB.
-
-Проверьте:
-
-```text
-запись есть в таблице insales_order_alerts
-request_id в YDB совпадает с request_id из очереди
-функция подключена к правильной базе YDB
-YDB_ENDPOINT указан правильно
-YDB_DATABASE указан правильно
-```
-
----
-
-### Если есть `Failed to parse queue message:`
-
-Значит функция не смогла разобрать тело сообщения из YMQ.
-
-Проверьте, что в очередь отправляется JSON такого вида:
-
-```json
-{
-  "request_id": "io_..."
-}
-```
-
----
-
-### Если нет `Route: reminder queue`
-
-Значит очередь не запускает функцию.
-
-Проверьте:
-
-```text
-Message Queue Trigger создан
-Триггер привязан к правильной очереди
-Триггер запускает правильную Cloud Function
-Выбран тег версии $latest
-У сервисного аккаунта есть ymq.reader
-У сервисного аккаунта есть serverless.functions.invoker
-```
-
----
-
-### Если есть `insales-order-handler failed:`
-
-Значит функция упала с ошибкой.
-
-В этой же строке или рядом с ней будет текст ошибки. По нему обычно понятно, где проблема:
-
-```text
-Telegram API
-YDB
-YMQ
-переменные окружения
-права сервисного аккаунта
-```
 
 ## 6.14. Частые проблемы
 
@@ -2468,11 +2402,9 @@ email
 
 ---
 
----
-
 ## 7.5. Проверить логи функции
 
-Если сообщение не пришло или пришло некорректно, откройте логи функции:
+Если сообщение не пришло или пришло некорректно, откройте логи:
 
 ```text
 Yandex Cloud
@@ -2481,24 +2413,7 @@ Yandex Cloud
 → Логи
 ```
 
-После отправки тестового письма или тестового события в логах должен появиться новый вызов функции.
-
-Обычно новый вызов видно по строкам вида:
-
-```text
-END RequestID: ...
-REPORT RequestID: ...
-```
-
-Также в логах могут быть строки с названием обработчика, например:
-
-```text
-handleEmailOrder
-sendTelegramOrder
-handler
-```
-
-Если в коде включены пользовательские логи, дополнительно могут появиться строки вроде:
+В логах должны быть строки вроде:
 
 ```text
 Route: email order
@@ -2506,23 +2421,7 @@ Extracted email input
 Parsed order
 ```
 
-Важно: отсутствие строк `Route: email order`, `Extracted email input` или `Parsed order` само по себе не означает ошибку.  
-Они появятся только если такие `console.log(...)` есть в текущей версии кода.
-
-Главное — проверить, появляется ли новый вызов функции после отправки тестового письма или события.
-
-Если новый вызов функции вообще не появляется, значит событие не доходит до функции.
-
-Проверьте:
-
-```text
-триггер настроен
-триггер активен
-функция опубликована
-у триггера есть права на вызов функции
-```
-
-Если новый вызов функции появляется, но сообщение в Telegram не приходит или приходит некорректно, проверьте логи ошибки.
+Если функция упала, в логах будет ошибка.
 
 Частые причины:
 
@@ -2530,36 +2429,9 @@ Parsed order
 неверный TELEGRAM_BOT_TOKEN
 неверный TELEGRAM_CHAT_ID
 бот не добавлен в чат
-бот не имеет прав писать в чат
 ошибка в YDB_ENDPOINT или YDB_DATABASE
 не хватает зависимости в package.json
-неверный формат входящего события
-ошибка при парсинге письма
-ошибка при отправке сообщения в Telegram
 ```
-
-Если функция упала, в логах обычно будет ошибка или stack trace.
-
-Например, в stack trace могут быть строки вида:
-
-```text
-at async handleEmailOrder (...)
-at async sendTelegramOrder (...)
-at async module.exports.handler (...)
-```
-
-Такие строки показывают, в каком обработчике произошла ошибка или где выполнялся код в момент сбоя.
-
-Для диагностики можно временно добавить подробные логи:
-
-```js
-console.log('Route: email order');
-console.log('Incoming event:', JSON.stringify(event));
-console.log('Extracted email input:', emailInput);
-console.log('Parsed order:', order);
-```
-
-После проверки подробные логи лучше убрать, чтобы не хранить лишние данные в логах.
 
 ---
 
@@ -2717,13 +2589,13 @@ E-mail: ...
 
 ## 7.12. Проверить логи YMQ Trigger
 
-Если напоминание не пришло, откройте логи функции. При срабатывании очереди должна быть строка:
+Если напоминание не пришло, откройте логи функции. При срабатывании очереди в логах должен появиться новый вызов функции, а если в коде включён пользовательский лог — строка:
 
 ```text
 Route: reminder queue
 ```
 
-Если такой строки нет, значит YMQ Trigger не вызывает функцию.
+Если новый вызов вообще не появляется, значит YMQ Trigger не запускает функцию.
 
 Проверьте:
 
@@ -2823,7 +2695,14 @@ Yandex Cloud
 Route: email order
 ```
 
-Если такой строки нет, значит функция не получила письмо.
+Эта строка появляется только в **Pro-версии**. В Lite-версии ориентируйтесь на строки:
+
+```text
+Extracted email input:
+Parsed order:
+```
+
+Если ни одной из этих строк нет, значит функция не получила письмо.
 
 Проверьте:
 

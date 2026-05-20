@@ -1,0 +1,9 @@
+{
+  "name": "order-mail-to-telegram-lite",
+  "version": "1.0.0",
+  "description": "Lite version: send order email notifications to Telegram via Yandex Cloud Functions.",
+  "main": "index.js",
+  "dependencies": {
+    "html-to-text": "^9.0.5"
+  }
+}
